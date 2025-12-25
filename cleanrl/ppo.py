@@ -32,6 +32,8 @@ class Args:
     """the entity (team) of wandb's project"""
     capture_video: bool = False
     """whether to capture videos of the agent performances (check out `videos` folder)"""
+    render_env: bool = False
+    """whether to render the environment during training (real-time display)"""
 
     # Algorithm specific arguments
     env_id: str = "CartPole-v1"
@@ -78,11 +80,18 @@ class Args:
     """the number of iterations (computed in runtime)"""
 
 
-def make_env(env_id, idx, capture_video, run_name):
+def make_env(env_id, idx, capture_video, run_name, render_env):
     def thunk():
-        if capture_video and idx == 0:
-            env = gym.make(env_id, render_mode="rgb_array")
-            env = gym.wrappers.RecordVideo(env, f"videos/{run_name}")
+        if idx == 0:
+            if render_env:
+                # 优先实时显示
+                env = gym.make(env_id, render_mode="human")
+            elif capture_video:
+                # 只录制视频，不实时显示
+                env = gym.make(env_id, render_mode="rgb_array")
+                env = gym.wrappers.RecordVideo(env, f"videos/{run_name}")
+            else:
+                env = gym.make(env_id)
         else:
             env = gym.make(env_id)
         env = gym.wrappers.RecordEpisodeStatistics(env)
@@ -160,7 +169,7 @@ if __name__ == "__main__":
 
     # env setup
     envs = gym.vector.SyncVectorEnv(
-        [make_env(args.env_id, i, args.capture_video, run_name) for i in range(args.num_envs)],
+        [make_env(args.env_id, i, args.capture_video, run_name, args.render_env) for i in range(args.num_envs)],
     )
     assert isinstance(envs.single_action_space, gym.spaces.Discrete), "only discrete action space is supported"
 

@@ -58,6 +58,18 @@ uv run python cleanrl/ppo.py \
     --env-id CartPole-v0 \
     --total-timesteps 50000
 
+uv run python cleanrl/ppo.py \
+    --seed 1 \
+    --env-id CartPole-v0 \
+    --total-timesteps 50000 \
+    --capture_video
+
+uv run python cleanrl/ppo.py \
+    --seed 1 \
+    --env-id CartPole-v0 \
+    --total-timesteps 50000 \
+    --render_env
+
 # open another terminal and enter `cd cleanrl/cleanrl`
 tensorboard --logdir runs
 ```
