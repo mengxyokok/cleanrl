@@ -1,0 +1,44 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "PPO CartPole (render)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cleanrl/ppo.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--seed", "1",
+                "--env-id", "CartPole-v0",
+                "--total-timesteps", "10000",
+                "--num-envs", "1",
+                "--render-env"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "PPO Atari (render)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cleanrl/ppo_atari.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "--seed", "1",
+                "--env-id", "BreakoutNoFrameskip-v4",
+                "--total-timesteps", "10000",
+                "--num-envs", "1",
+                "--render-env"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "cwd": "${workspaceFolder}"
+        },
+    ]
+}
+
