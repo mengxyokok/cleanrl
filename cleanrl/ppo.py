@@ -78,6 +78,8 @@ class Args:
     """the mini-batch size (computed in runtime)"""
     num_iterations: int = 0
     """the number of iterations (computed in runtime)"""
+    save_model: bool = False
+    """whether to save the model weights"""
 
 
 def make_env(env_id, idx, capture_video, run_name, render_env):
@@ -317,5 +319,13 @@ if __name__ == "__main__":
         print("SPS:", int(global_step / (time.time() - start_time)))
         writer.add_scalar("charts/SPS", int(global_step / (time.time() - start_time)), global_step)
 
+    if args.save_model:  # 需要在 Args 中添加 save_model 参数
+        model_path = f"runs/{run_name}/{args.exp_name}.cleanrl_model"
+        model_data = {
+            "model_weights": agent.state_dict(),
+            "args": vars(args),
+        }
+        torch.save(model_data, model_path)
+        print(f"model saved to {model_path}")
     envs.close()
     writer.close()
