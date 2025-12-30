@@ -42,6 +42,8 @@ class Args:
     """the entity (team) of wandb's project"""
     capture_video: bool = False
     """whether to capture videos of the agent performances (check out `videos` folder)"""
+    render_env: bool = False
+    """whether to render the environment during training (real-time display)"""
 
     # Algorithm specific arguments
     env_id: str = "BeamRiderNoFrameskip-v4"
@@ -74,11 +76,13 @@ class Args:
     """coefficient for scaling the autotune entropy target"""
 
 
-def make_env(env_id, seed, idx, capture_video, run_name):
+def make_env(env_id, seed, idx, capture_video, run_name, render_env):
     def thunk():
         if capture_video and idx == 0:
             env = gym.make(env_id, render_mode="rgb_array")
             env = gym.wrappers.RecordVideo(env, f"videos/{run_name}")
+        elif render_env and idx == 0:
+            env = gym.make(env_id, render_mode="human")
         else:
             env = gym.make(env_id)
         env = gym.wrappers.RecordEpisodeStatistics(env)
@@ -201,7 +205,7 @@ if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() and args.cuda else "cpu")
 
     # env setup
-    envs = gym.vector.SyncVectorEnv([make_env(args.env_id, args.seed, 0, args.capture_video, run_name)])
+    envs = gym.vector.SyncVectorEnv([make_env(args.env_id, args.seed, 0, args.capture_video, run_name, args.render_env)])
     assert isinstance(envs.single_action_space, gym.spaces.Discrete), "only discrete action space is supported"
 
     actor = Actor(envs).to(device)
