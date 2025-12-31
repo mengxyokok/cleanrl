@@ -66,6 +66,10 @@ class Args:
     """Entropy regularization coefficient."""
     autotune: bool = True
     """automatic tuning of the entropy coefficient"""
+    save_model: bool = True
+    """whether to save model into the `runs/{run_name}` folder"""
+    save_model_frequency: int = 100_000
+    """save model every N timesteps (0 means only save at the end)"""
 
 
 def make_env(env_id, seed, idx, capture_video, run_name, render_env):
@@ -323,6 +327,23 @@ if __name__ == "__main__":
                 )
                 if args.autotune:
                     writer.add_scalar("losses/alpha_loss", alpha_loss.item(), global_step)
+
+        # Save model checkpoint at specified intervals (only after learning starts)
+        if (
+            args.save_model
+            and args.save_model_frequency > 0
+            and global_step > args.learning_starts
+            and global_step % args.save_model_frequency == 0
+        ):
+            model_path = f"runs/{run_name}/{args.exp_name}_step_{global_step}.cleanrl_model"
+            torch.save((actor.state_dict(), qf1.state_dict(), qf2.state_dict()), model_path)
+            print(f"model checkpoint saved to {model_path} at step {global_step}")
+
+    # Save final model
+    if args.save_model:
+        model_path = f"runs/{run_name}/{args.exp_name}.cleanrl_model"
+        torch.save((actor.state_dict(), qf1.state_dict(), qf2.state_dict()), model_path)
+        print(f"final model saved to {model_path}")
 
     envs.close()
     writer.close()
