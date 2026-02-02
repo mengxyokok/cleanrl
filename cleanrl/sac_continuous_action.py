@@ -38,8 +38,37 @@ class Args:
     """whether to render the environment during training (real-time display)"""
 
     # Algorithm specific arguments
-    env_id: str = "Hopper-v4"
+    env_id: str = "Walker2d-v4"
     """the environment id of the task"""
+    # MuJoCo v4 环境（Gymnasium）
+    # Hopper-v4           # 单腿跳跃（默认值）
+    # HalfCheetah-v4      # 半人马（快速奔跑）
+    # Walker2d-v4         # 2D 步行者
+    # InvertedPendulum-v4 # 倒立摆
+    # InvertedDoublePendulum-v4 # 倒立摆（双摆）
+    # Ant-v4 - 蚂蚁机器人，4条腿
+    # Reacher-v4 - 伸手任务
+    # Swimmer-v4 - 游泳者
+    # HumanoidStandup-v4 - 人形站立
+    # Humanoid-v4 - 人形机器人
+
+    # 经典控制环境（Gymnasium）
+    # Pendulum-v1 - 单摆
+    # Acrobot-v1 - 双摆
+    # CartPoler-v1 - 倒立摆
+    # MountainCar-v0 - 山地车
+    # Continuous_MountainCar-v0 - 山地车
+
+
+    # dm_control 环境
+    # dm_control/cartpole-balance-v0
+    # dm_control/cheetah-run-v0
+    # dm_control/humanoid-walk-v0
+    # dm_control/humanoid-run-v0
+    # dm_control/humanoid-run-pure-state-v0
+    # dm_control/humanoid-stand-v0
+
+
     total_timesteps: int = 1_000_000
     """total timesteps of the experiments"""
     num_envs: int = 1
